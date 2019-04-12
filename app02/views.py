@@ -38,15 +38,75 @@ def host(request):
         # return render(request, 'app02/host.html')
         return redirect('/app02/host')
 def test_ajax(request):
-    h = request.POST.get('hostname')
-    i = request.POST.get('ip')
-    p = request.POST.get('port')
-    b = request.POST.get('b_id')
-    if len(h)>5 and h :
-        models.Host.objects.create(hostname=h, ip=i, port=p, b_id=b)
+    import json
+    ret = {'status': True, 'error': None, 'data': None}
+    try:
+        h = request.POST.get('hostname')
+        i = request.POST.get('ip')
+        p = request.POST.get('port')
+        b = request.POST.get('b_id')
+        if len(h) > 5 and h:
+            models.Host.objects.create(hostname=h, ip=i, port=p, b_id=b)
+            # return HttpResponse('ok')
+        else:
+            ret['status']=False
+            ret['error']='太短了'
+    except Exception as e:
+        ret['error']='请求错误'
+    return HttpResponse(json.dumps(ret))
+
+def edit_ajax(request):
+
+    if request.method == 'POST':
+        nid = request.POST.get('nid')
+        h = request.POST.get('hostname')
+        i = request.POST.get('ip')
+        p = request.POST.get('port')
+        b = request.POST.get('b_id')
+        print(request.POST)
+        models.Host.objects.filter(nid=nid).update(hostname=h,ip=i,port=p,b_id=b)
         return HttpResponse('ok')
     else:
-        return HttpResponse('太短了')
+        return HttpResponse('no')
+def app(request):
+    if request.method == 'GET':
+        app_list = models.Aplication.objects.all()
+        host_list = models.Host.objects.all()
+        return render(request, 'app02/app.html', {'app_list': app_list, 'host_list': host_list})
+    elif request.method == 'POST':
+        app_name = request.POST.get('app_name')
+        host_list = request.POST.getlist('host_list')
+        print(app_name,host_list)
+        obj = models.Aplication.objects.create(name=app_name)
+        obj.r.add(*host_list)
+        return HttpResponse('ok')
+def ajax_add_app(request):
+    import json
+    ret = {'status': True, 'error': None, 'data': None}
+    app_name = request.POST.get('app_name')
+    host_list = request.POST.getlist('host_list')
+    print(app_name,host_list)
+    obj = models.Aplication.objects.create(name=app_name)
+    obj.r.add(*host_list)
+    return HttpResponse(json.dumps(ret))
+
+def ajax_edit_app(request):
+    import json
+    ret = {'status': True, 'error': None, 'data': None}
+    aid = request.POST.get('aid')
+    obj=models.Aplication.objects.get(id=aid)
+    obj.name='testmodif'
+    obj.save()
+
+
+    return HttpResponse(json.dumps(ret))
+
+
+
+
+
+
+
 
 
 

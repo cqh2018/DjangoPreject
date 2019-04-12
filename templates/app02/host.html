@@ -122,10 +122,12 @@
         <input type="submit" value="提交">
     <a id="ajax_submit" style="display: inline-block;padding: 5px;background: blue;color: white">ajax提交</a>
         <input id="cancel" type="button" value="取消">
+    <span id="erro_msg" style="color: red"></span>
     </form>
 </div>
 <div class="edit-modal hide">
     <form id="edit_form" method="post" action="/app02/host/">
+            <input type="text" name="nid" style="display: none">
             <input type="text" placeholder="主机名" name="hostname">
             <input type="text" placeholder="IP" name="ip">
             <input type="text" placeholder="端口" name="port">
@@ -138,10 +140,8 @@
     </form>
 </div>
 
-
 <script src="/static/jquery.min.js"></script>
 <script>
-
     $(function () {
         $('#add_host').click(function () {
             $('.shade,.add-modal').removeClass('hide');
@@ -155,6 +155,33 @@
                 type:'POST',
                 data:{'hostname':$('#host').val(),'ip':$('#ip').val(),'port':$('#port').val(),'b_id':$('#sel').val()},
                 success:function (data) {
+                    var obj = JSON.parse(data)
+                    if(obj.status){
+                        location.reload()
+                    }else {
+                        $('#erro_msg').text(obj.error)
+
+                    }
+
+                }
+            })
+        })
+
+
+        $('.edit').click(function () {
+            $('.shade,.edit-modal').removeClass('hide')
+            var bid = $(this).parent().parent().attr('bid')
+            $('#edit_form').find('select').val(bid)
+            var nid = $(this).parent().parent().attr('hid')
+            $('#edit_form').find('input[name="nid"]').val(nid)
+        })
+        $('#ajax_submit_edit').click(function () {
+            //修改
+            $.ajax({
+                url:"/app02/edit_ajax/",
+                type:'POST',
+                data:$('#edit_form').serialize(),
+                success:function (data) {
                     if (data=='ok'){
                         location.reload()
                     }else{
@@ -163,13 +190,7 @@
                 }
             })
         })
-        $('.edit').click(function () {
-            $('.shade,.edit-modal').removeClass('hide')
-            
-        })
     })
 </script>
-
-
 </body>
 </html>
