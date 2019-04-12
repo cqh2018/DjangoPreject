@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/commons.css">
+</head>
+<body style="margin: 0">
+    <div style="height: 48px;background-color: #dddddd"></div>
+    <div>
+        <form action="/home/" method="post">
+            <input type="text" name="username" placeholder="用户名" />
+            <input type="text" name="email"  placeholder="邮箱"/>
+            <input type="text" name="gender"  placeholder="性别"/>
+            <input type="submit" value="添加" />
+        </form>
+    </div>
+    <div>
+        <table>
+            {% for row in user_list %}
+                <tr>
+                    <td>{{ row.username }}</td>
+                    <td>{{ row.gender }}</td>
+                    <td>{{ row.email }}</td>
+                    <td>
+                        <a href="/detail?nid={{ row.id }}">查看详细</a> |
+                        <a class="del" href="#" row-id="{{ row.id }}">删除</a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+    <div>
+        <form action="/del_host/" method="post" id="delform">
+            <input  id="nid" type="text" style="display: none" name="nid" value="1" />
+
+        </form>
+    </div>
+<script src="/static/jquery.min.js"></script>
+<script>
+    $('.del').click(function () {
+        var row_id = $(this).attr('row-id');
+        $('#nid').val(row_id);
+        $('#delform').submit()
+    })
+</script>
+
+</body>
+</html>
