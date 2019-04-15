@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+        <style>
+        .pg_header{
+            height: 48px;
+            background-color: seashell;
+            color:green;
+        }
+    </style>
+    <link rel="stylesheet" href="/static/commons.css">
+    {% block css %} {% endblock %}
+</head>
+<body>
+<div class="pg_header">小男孩管理</div>
+
+{% block content %}{% endblock %}
+
+<script src="/static/jquery.min.js"></script>
+</body>
+</html>

@@ -54,15 +54,15 @@
     <tbody>
     {% for app in app_list %}
         <tr aid="{{ app.id }}">
-        <td>{{ app.name }}</td>
+        <td id="appname">{{ app.name }}</td>
         <td>
             {% for host in app.r.all %}
                 <span class="host-tag" hid="{{ host.nid }}">{{ host.hostname }}</span>
             {% endfor %}
         </td>
-            <td>
-                <a class="edit">编辑</a>|<a class="delete">删除</a>
-            </td>
+        <td>
+            <a class="edit">编辑</a>|<a class="delete">删除</a>
+        </td>
         </tr>
     {% endfor %}
     </tbody>
@@ -83,6 +83,7 @@
                 </select>
         </div>
         <input type="submit" value="提交">
+        <input id="cancel" type="button" value="取消">
         <input id="add_submit_ajax" type="button" value="ajax提交">
 
     </form>
@@ -96,7 +97,8 @@
                 <option value="{{ op.nid }}">{{ op.hostname }}</option>
                 {% endfor %}
             </select>
-            <a id="ajax_submit_edit">确认编辑</a>
+            <a id="ajax_submit_edit">编辑</a>
+            <input id="edit_cancel" type="button" value="取消">
     </form>
 </div>
 
@@ -134,6 +136,38 @@
             })
         })
         
+        $('.delete').click(function () {
+            var aid = $(this).parent().parent().attr('aid')
+            var host_list = []
+            $(this).parent().prev().children().each(function () {
+                var text = $(this).text()
+                var hid = $(this).attr('hid')
+                host_list.push(hid)
+            })
+            $.ajax({
+                url: '/app02/ajax_delete_app/',
+                {#data:{'user':123,'host_list':[1,2,3,4]},#}
+                data: {'aid': aid,'host_list':host_list},
+                type: 'POST',
+                dataType: 'JSON',//自动将传过来的字符串转换成JSON对象
+                traditional: true,//host_list不是字符串和数字，后台会报None。jQuery中traditional会将列表传过去
+                success: function (obj) {
+                    console.log(obj)
+                    if (obj.status) {
+                        console.log('编辑成功')
+                        location.reload()
+                    } else {
+                        $('#erro_msg').text(obj.error)
+                        console.log('xx')
+                    }
+                },
+                error: function () {
+                }
+            })
+
+
+        })
+
         $('.edit').click(function () {
             $('.shade,.edit-modal').removeClass('hide');
             var hid_list = []
@@ -141,13 +175,22 @@
                 var text = $(this).text()
                 var hid = $(this).attr('hid')
                 hid_list.push(hid)
-
             })
-           $('#edit_form').find('select').val(hid_list)
+            var aid =$(this).parent().parent().attr('aid')
+            var appname =$(this).parent().parent().children().first().text()
+            console.log(appname)
+            $('#edit_form').find('select').val(hid_list)
+            $('#edit_form').find("input[name='app']").val(appname)
+            $('#edit_form').find("input[name='nid']").val(aid)
 
         })
 
-            $('#ajax_submit_edit').click(function () {
+
+        $('#edit_cancel').click(function () {
+            location.reload()
+        })
+
+        $('#ajax_submit_edit').click(function () {
             $.ajax({
                 url:'/app02/ajax_edit_app/',
                 {#data:{'user':123,'host_list':[1,2,3,4]},#}

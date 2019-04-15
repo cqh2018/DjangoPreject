@@ -21,6 +21,9 @@ urlpatterns = [
     path('cmdb/', include('cmdb.urls')),
     path('app01/', include('app01.urls')),
     path('app02/', include('app02.urls')),
+    path('app03/', include('app03.urls')),
+    path('templat/', include('templat.urls')),
+    path('admincenter/', include('admincenter.urls')),
 ]
 
 # urlpatterns = [

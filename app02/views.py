@@ -93,11 +93,25 @@ def ajax_add_app(request):
 def ajax_edit_app(request):
     import json
     ret = {'status': True, 'error': None, 'data': None}
-    aid = request.POST.get('aid')
+    aid = request.POST.get('nid')
+    appname = request.POST.get('app')
+    host_list = request.POST.getlist('host_list')
+    print(aid)
+    print(request.POST)
     obj=models.Aplication.objects.get(id=aid)
-    obj.name='testmodif'
+    obj.name=appname
+    obj.r.set(host_list)
     obj.save()
-
+    return HttpResponse(json.dumps(ret))
+def ajax_delete_app(request):
+    import json
+    ret = {'status': True, 'error': None, 'data': None}
+    aid = request.POST.get('aid')
+    host_list = request.POST.getlist('host_list')
+    print(aid+'11')
+    # print(request.POST)
+    print(host_list)
+    obj=models.Aplication.objects.filter(id=aid).delete()
 
     return HttpResponse(json.dumps(ret))
 

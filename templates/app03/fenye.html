@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    .page{
+        display: inline-block;
+        padding: 5px;
+        background-color: #6DDCBD;
+        margin: 5px;
+    }
+    .page.active{
+            background-color: brown;
+            color: white;
+        }
+
+
+</style>
+<body>
+
+<ul>
+    {% for i in li %}
+    <li>{{ i }}</li>
+    {% endfor %}
+</ul>
+<div class="pagination">
+ {{ page_str }}
+</div>
+
+</body>
+</html>
