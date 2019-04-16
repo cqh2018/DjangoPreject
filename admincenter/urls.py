@@ -8,5 +8,6 @@ urlpatterns = [
     # path('login/', views.login),
     # re_path('business/$', views.business),
     path('downloadTest/', views.downloadTest),
+    path('download/', views.download),
     path('index/', views.index),
 ]
